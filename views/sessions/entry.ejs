@@ -1,0 +1,70 @@
+<%- include('../partials/header', { pageTitle: 'Entrée véhicule' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'entry' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Enregistrer une entrée</h1>
+                <p>Le système honore la réservation du véhicule si elle existe, sinon il attribue automatiquement une place compatible (règles de substitution).</p>
+            </div>
+            <a class="btn" href="/sessions">Historique</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card">
+            <form action="/sessions/entry" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="plateNumber">Immatriculation</label>
+                        <input type="text" id="plateNumber" name="plateNumber" placeholder="1234TAA" required autofocus>
+                    </div>
+                    <div class="field">
+                        <label for="preferredZone">Zone préférée (facultatif)</label>
+                        <select id="preferredZone" name="preferredZone">
+                            <option value="">Aucune préférence</option>
+                            <% zones.forEach(function(z) { %>
+                                <option value="<%= z %>">Zone <%= z %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="spaceId">Place imposée (facultatif)</label>
+                        <select id="spaceId" name="spaceId">
+                            <option value="">Attribution automatique</option>
+                            <% availableSpaces.forEach(function(s) { %>
+                                <option value="<%= s.id %>"><%= s.number %> - <%= s.typeLabel %> - zone <%= s.zone %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="entryTime">Horodatage (vide = maintenant)</label>
+                        <input type="datetime-local" id="entryTime" name="entryTime">
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer l'entrée</button>
+                    <a class="btn" href="/dashboard">Annuler</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card" style="margin-top:24px;">
+            <h2>Places libres</h2>
+            <div class="slot-grid">
+                <% availableSpaces.forEach(function(space) { %>
+                    <div class="slot LIBRE">
+                        <span><%= space.number %></span>
+                        <small><%= space.typeLabel %></small>
+                    </div>
+                <% }); %>
+            </div>
+            <% if (availableSpaces.length === 0) { %>
+                <div class="empty">Parking complet.</div>
+            <% } %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

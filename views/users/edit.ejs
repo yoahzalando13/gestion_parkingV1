@@ -1,0 +1,71 @@
+<%- include('../partials/header', { pageTitle: 'Modifier l\'utilisateur ' + user.username }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Modifier l'utilisateur <%= user.username %></h1>
+                <p>Mise à jour des informations de compte</p>
+            </div>
+            <a class="btn" href="/users">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:650px;">
+            <form action="/users/<%= user.id %>/edit" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="username">Identifiant</label>
+                        <input type="text" id="username" name="username" value="<%= user.username %>" readonly style="background:var(--surface-alt); cursor:not-allowed;">
+                    </div>
+                    <div class="field">
+                        <label for="password">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                        <input type="password" id="password" name="password" placeholder="••••••••">
+                    </div>
+                    <div class="field">
+                        <label for="firstName">Prénom</label>
+                        <input type="text" id="firstName" name="firstName" value="<%= user.firstName %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="lastName">Nom</label>
+                        <input type="text" id="lastName" name="lastName" value="<%= user.lastName %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<%= user.email %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="phone">Téléphone</label>
+                        <input type="text" id="phone" name="phone" value="<%= user.phone || '' %>">
+                    </div>
+                    <div class="field">
+                        <label for="role">Rôle</label>
+                        <select id="role" name="role" required>
+                            <option value="USER" <%= user.role === 'USER' ? 'selected' : '' %>>Utilisateur (Client)</option>
+                            <option value="OPERATOR" <%= user.role === 'OPERATOR' ? 'selected' : '' %>>Opérateur</option>
+                            <option value="MANAGER" <%= user.role === 'MANAGER' ? 'selected' : '' %>>Gestionnaire</option>
+                            <option value="ADMIN" <%= user.role === 'ADMIN' ? 'selected' : '' %>>Administrateur</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="category">Catégorie usager</label>
+                        <select id="category" name="category" required>
+                            <option value="STANDARD" <%= user.category === 'STANDARD' ? 'selected' : '' %>>Standard</option>
+                            <option value="VIP" <%= user.category === 'VIP' ? 'selected' : '' %>>VIP</option>
+                            <option value="PMR" <%= user.category === 'PMR' ? 'selected' : '' %>>PMR (Mobilité réduite)</option>
+                            <option value="ABONNE" <%= user.category === 'ABONNE' ? 'selected' : '' %>>Abonné</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer les modifications</button>
+                    <a class="btn" href="/users">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<%- include('../partials/header', { pageTitle: 'Véhicules' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'vehicles' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Véhicules enregistrés</h1>
+                <p>Répertoire des véhicules et attribution aux usagers.</p>
+            </div>
+            <a class="btn primary" href="/vehicles/new">Ajouter un véhicule</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/vehicles" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="field">
+                        <label for="search">Recherche plaque / modèle</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: 1234TAA, Toyota...">
+                    </div>
+                    <div class="field">
+                        <label for="type">Type de véhicule</label>
+                        <select id="type" name="type">
+                            <option value="">Tous les types</option>
+                            <% types.forEach(function(t) { %>
+                                <option value="<%= t.key %>" <%= selectedType === t.key ? 'selected' : '' %>><%= t.label %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Immatriculation</th>
+                        <th>Marque & Modèle</th>
+                        <th>Couleur</th>
+                        <th>Type</th>
+                        <th>Propriétaire</th>
+                        <th>Catégorie client</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% vehicles.forEach(function(v) { %>
+                    <tr>
+                        <td><strong><%= v.plateNumber %></strong></td>
+                        <td><%= v.brand %> <%= v.model %></td>
+                        <td><%= v.color || '-' %></td>
+                        <td><span class="badge"><%= v.typeLabel %></span></td>
+                        <td><%= v.ownerName %></td>
+                        <td><%= v.ownerCategory %></td>
+                        <td>
+                            <a class="btn small" href="/sessions/entry?plateNumber=<%= v.plateNumber %>">Entrée</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (vehicles.length === 0) { %>
+                    <div class="empty">Aucun véhicule enregistré.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

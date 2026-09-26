@@ -1,0 +1,61 @@
+<%- include('../partials/header', { pageTitle: 'Places disponibles' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'available' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Places disponibles</h1>
+                <p>Places libres pouvant accueillir immédiatement un véhicule ou une réservation.</p>
+            </div>
+            <div>
+                <a class="btn" href="/spaces/map">Plan du parking</a>
+                <a class="btn primary" href="/sessions/entry">Attribuer une place</a>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/spaces/available" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="field">
+                        <label for="zone">Filtrer par Zone</label>
+                        <select id="zone" name="zone" onchange="this.form.submit()">
+                            <option value="">Toutes les zones</option>
+                            <% zones.forEach(function(z) { %>
+                                <option value="<%= z %>" <%= selectedZone === z ? 'selected' : '' %>>Zone <%= z %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="type">Type de place</label>
+                        <select id="type" name="type" onchange="this.form.submit()">
+                            <option value="">Tous les types</option>
+                            <% types.forEach(function(t) { %>
+                                <option value="<%= t.key %>" <%= selectedType === t.key ? 'selected' : '' %>><%= t.label %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2><%= availableSpaces.length %> place(s) libre(s)</h2>
+            <div class="slot-grid">
+                <% availableSpaces.forEach(function(space) { %>
+                    <div class="slot LIBRE" title="<%= space.typeLabel %> - Zone <%= space.zone %> (Niveau <%= space.level %>)">
+                        <span><%= space.number %></span>
+                        <small><%= space.typeLabel %> · Z<%= space.zone %></small>
+                    </div>
+                <% }); %>
+            </div>
+            <% if (availableSpaces.length === 0) { %>
+                <div class="empty">Aucune place libre correspondant aux critères.</div>
+            <% } %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

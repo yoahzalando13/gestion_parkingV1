@@ -1,0 +1,62 @@
+<aside class="sidebar">
+    <div class="brand">
+        <span><%= parkingName || 'Parking Central' %></span>
+        <small>Gestion des places et des accès</small>
+    </div>
+    <nav>
+        <a href="/dashboard" class="<%= activeMenu === 'dashboard' ? 'active' : '' %>">Tableau de bord</a>
+
+        <div class="group-title">Parking</div>
+        <a href="/spaces/map" class="<%= activeMenu === 'map' ? 'active' : '' %>">Plan du parking</a>
+        <a href="/spaces/available" class="<%= activeMenu === 'available' ? 'active' : '' %>">Places disponibles</a>
+        <a href="/spaces" class="<%= activeMenu === 'spaces' ? 'active' : '' %>">Toutes les places</a>
+
+        <div class="group-title">Exploitation</div>
+        <a href="/reservations" class="<%= activeMenu === 'reservations' ? 'active' : '' %>">Réservations</a>
+        <% if (currentUser && ['ADMIN', 'MANAGER', 'OPERATOR'].includes(currentUser.role)) { %>
+            <a href="/sessions/entry" class="<%= activeMenu === 'entry' ? 'active' : '' %>">Entrée véhicule</a>
+            <a href="/sessions/exit" class="<%= activeMenu === 'exit' ? 'active' : '' %>">Sortie véhicule</a>
+            <a href="/sessions" class="<%= activeMenu === 'sessions' ? 'active' : '' %>">Historique entrées / sorties</a>
+            <a href="/vehicles" class="<%= activeMenu === 'vehicles' ? 'active' : '' %>">Véhicules</a>
+        <% } %>
+
+        <% if (currentUser && ['ADMIN', 'MANAGER'].includes(currentUser.role)) { %>
+            <div class="group-title">Gestion</div>
+            <a href="/subscriptions" class="<%= activeMenu === 'subscriptions' ? 'active' : '' %>">Abonnements</a>
+            <a href="/invoices" class="<%= activeMenu === 'invoices' ? 'active' : '' %>">Facturation</a>
+            <a href="/statistics" class="<%= activeMenu === 'statistics' ? 'active' : '' %>">Statistiques</a>
+        <% } %>
+
+        <% if (currentUser && currentUser.role === 'ADMIN') { %>
+            <div class="group-title">Configuration</div>
+            <a href="/users" class="<%= activeMenu === 'users' ? 'active' : '' %>">Utilisateurs</a>
+            <a href="/tariffs" class="<%= activeMenu === 'tariffs' ? 'active' : '' %>">Tarification</a>
+            <a href="/api/docs" class="<%= activeMenu === 'api-docs' ? 'active' : '' %>">Documentation API</a>
+        <% } %>
+    </nav>
+    <div class="session" style="padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <% if (currentUser) { %>
+            <strong style="display:block; color:#fff;"><%= currentUser.firstName %> <%= currentUser.lastName %></strong>
+            <span style="font-size:11px; color:#94a3b8;"><%= currentUser.role %> (<%= currentUser.category %>)</span>
+
+            <!-- Quick role switch for convenience -->
+            <form action="/auth/switch-user" method="post" style="margin-top:8px;">
+                <label style="font-size:10px; color:#64748b; display:block; margin-bottom:2px;">Changer de compte :</label>
+                <select name="username" onchange="this.form.submit()" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; font-size:11px; padding:3px 6px; border-radius:4px; width:100%;">
+                    <option value="admin" <%= currentUser.username === 'admin' ? 'selected' : '' %>>admin (ADMIN)</option>
+                    <option value="manager" <%= currentUser.username === 'manager' ? 'selected' : '' %>>manager (MANAGER)</option>
+                    <option value="operator" <%= currentUser.username === 'operator' ? 'selected' : '' %>>operator (OPERATOR)</option>
+                    <option value="client" <%= currentUser.username === 'client' ? 'selected' : '' %>>client (USER)</option>
+                    <option value="vip" <%= currentUser.username === 'vip' ? 'selected' : '' %>>vip (USER - VIP)</option>
+                    <option value="pmr" <%= currentUser.username === 'pmr' ? 'selected' : '' %>>pmr (USER - PMR)</option>
+                </select>
+            </form>
+
+            <form action="/logout" method="post" style="margin-top:10px;">
+                <button class="btn small" type="submit" style="width:100%;">Déconnexion</button>
+            </form>
+        <% } else { %>
+            <a class="btn small primary" href="/login" style="width:100%; text-align:center;">Connexion</a>
+        <% } %>
+    </div>
+</aside>

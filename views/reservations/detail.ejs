@@ -1,0 +1,63 @@
+<%- include('../partials/header', { pageTitle: 'Réservation ' + reservation.reference }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'reservations' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Réservation <%= reservation.reference %></h1>
+                <p>Détails du créneau de réservation</p>
+            </div>
+            <div>
+                <% if (reservation.status === 'CONFIRMEE') { %>
+                    <a class="btn primary" href="/reservations/<%= reservation.id %>/edit">Modifier</a>
+                <% } %>
+                <a class="btn" href="/reservations">Retour</a>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:700px;">
+            <h2>Détails</h2>
+            <div class="detail-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Client</label>
+                    <strong style="font-size:15px;"><%= reservation.userName %></strong> (<%= reservation.userEmail %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Véhicule</label>
+                    <strong style="font-size:15px;"><%= reservation.plateNumber %></strong> (<%= reservation.vehicleBrand %> <%= reservation.vehicleModel %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Place réservée</label>
+                    <strong><%= reservation.spaceNumber %></strong> (Zone <%= reservation.spaceZone %>, Niveau <%= reservation.spaceLevel %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Statut</label>
+                    <span class="badge <%= reservation.status %>"><%= reservation.statusLabel %></span>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Arrivée prévue</label>
+                    <%= reservation.expectedArrivalFormatted %>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Départ prévu</label>
+                    <%= reservation.expectedDepartureFormatted %>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Date de création</label>
+                    <%= reservation.createdAtFormatted %>
+                </div>
+                <% if (reservation.cancellationReason) { %>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Motif d'annulation</label>
+                    <%= reservation.cancellationReason %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

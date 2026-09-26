@@ -1,0 +1,106 @@
+<%- include('../partials/header', { pageTitle: 'Toutes les places' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'spaces' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Places de parking</h1>
+                <p>Gestion et inventaire complet des places du parking.</p>
+            </div>
+            <div>
+                <a class="btn" href="/spaces/map">Plan visuel</a>
+                <% if (currentUser && currentUser.role === 'ADMIN') { %>
+                    <a class="btn primary" href="/spaces/new">Ajouter une place</a>
+                <% } %>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/spaces" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="field">
+                        <label for="search">Recherche numéro</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: A01, B...">
+                    </div>
+                    <div class="field">
+                        <label for="zone">Zone</label>
+                        <select id="zone" name="zone">
+                            <option value="">Toutes</option>
+                            <% zones.forEach(function(z) { %>
+                                <option value="<%= z %>" <%= selectedZone === z ? 'selected' : '' %>>Zone <%= z %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="type">Type</label>
+                        <select id="type" name="type">
+                            <option value="">Tous</option>
+                            <% types.forEach(function(t) { %>
+                                <option value="<%= t.key %>" <%= selectedType === t.key ? 'selected' : '' %>><%= t.label %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="status">Statut</label>
+                        <select id="status" name="status">
+                            <option value="">Tous</option>
+                            <% statuses.forEach(function(s) { %>
+                                <option value="<%= s.key %>" <%= selectedStatus === s.key ? 'selected' : '' %>><%= s.label %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Numéro</th>
+                        <th>Zone</th>
+                        <th>Niveau</th>
+                        <th>Type</th>
+                        <th>Statut</th>
+                        <th>Motif / Note</th>
+                        <% if (currentUser && currentUser.role === 'ADMIN') { %>
+                            <th>Actions</th>
+                        <% } %>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% spaces.forEach(function(space) { %>
+                    <tr>
+                        <td><strong><%= space.number %></strong></td>
+                        <td>Zone <%= space.zone %></td>
+                        <td>Niveau <%= space.level %></td>
+                        <td><span class="badge"><%= space.typeLabel %></span></td>
+                        <td><span class="badge <%= space.status %>"><%= space.statusLabel %></span></td>
+                        <td><%= space.outOfServiceReason || '-' %></td>
+                        <% if (currentUser && currentUser.role === 'ADMIN') { %>
+                            <td>
+                                <a class="btn small" href="/spaces/<%= space.id %>/edit">Modifier</a>
+                            </td>
+                        <% } %>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (spaces.length === 0) { %>
+                    <div class="empty">Aucune place trouvée avec ces critères.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

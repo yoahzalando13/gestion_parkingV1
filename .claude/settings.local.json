@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(break)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' -u admin:admin123 __TRACKED_VAR__/api/parking/spaces/available?type=VIP)",
+      "Bash(curl -s -u admin:admin123 __TRACKED_VAR__/api/parking/spaces/available?type=VIP)",
+      "Bash(curl -s -w '\\\\nHTTP %{http_code}\\\\n' -u operator:operator123 -X POST http://localhost:8080/api/parking/entries -H 'Content-Type: application/json' -d '{\"plateNumber\":\"9012TCC\"}')",
+      "Bash(curl -s -u operator:operator123 -X POST http://localhost:8080/api/parking/entries -H 'Content-Type: application/json' -d '{\"plateNumber\":\"3456TDD\"}')",
+      "Bash(curl -s -o /dev/null -w 'HTTP %{http_code}\\\\n' -u operator:operator123 -X POST http://localhost:8080/api/parking/entries -H 'Content-Type: application/json' -d '{\"plateNumber\":\"7890TEE\",\"entryTime\":\"__CMDSUB_OUTPUT__\"}')",
+      "Bash(curl -s -u operator:operator123 -X POST http://localhost:8080/api/parking/exits -H 'Content-Type: application/json' -d '{\"plateNumber\":\"7890TEE\",\"markAsPaid\":true}')",
+      "Bash(curl -s -u manager:manager123 -X POST http://localhost:8080/api/subscriptions -H 'Content-Type: application/json' -d '{\"userId\":4,\"vehicleId\":2,\"type\":\"MENSUEL\",\"startDate\":\"__CMDSUB_OUTPUT__\"}')",
+      "Bash(python -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\(json.dumps\\(d['invoice'],indent=1,ensure_ascii=False\\)\\)\")",
+      "Bash(sed -i 's/th:each=\"session : \\\\${ongoing}\"/th:each=\"ps : ${ongoing}\"/; s/th:each=\"session : \\\\${page.content}\"/th:each=\"ps : ${page.content}\"/; s/\\\\${session\\\\./${ps./g' src/main/resources/templates/dashboard.html src/main/resources/templates/sessions/list.html src/main/resources/templates/sessions/exit.html)",
+      "Bash(sed -i 's/\\\\${session\\\\./${parkingSession./g' src/main/resources/templates/sessions/detail.html)",
+      "Bash(sed -i 's/model.addAttribute\\(\"session\", parkingService.getById\\(id\\)\\);/model.addAttribute\\(\"parkingSession\", parkingService.getById\\(id\\)\\);/' src/main/java/com/example/parking/controller/web/SessionWebController.java)",
+      "Bash(sed -i 's/format\\(session\\\\./format\\(ps./g' src/main/resources/templates/dashboard.html src/main/resources/templates/sessions/list.html src/main/resources/templates/sessions/exit.html)",
+      "Bash(sed -i 's/format\\(session\\\\./format\\(parkingSession./g' src/main/resources/templates/sessions/detail.html)"
+    ]
+  }
+}

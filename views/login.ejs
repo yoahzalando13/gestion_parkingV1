@@ -1,0 +1,37 @@
+<%- include('partials/header', { pageTitle: 'Connexion' }) %>
+<div class="login-wrapper" style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div class="login-box card" style="max-width:420px; width:100%;">
+        <div style="text-align:center; margin-bottom:24px;">
+            <h1 style="font-size:24px; margin-bottom:6px;"><%= parkingName || 'Parking Central' %></h1>
+            <p style="color:var(--text-muted); font-size:13px; margin:0;">Système informatisé de gestion de parking</p>
+        </div>
+
+        <%- include('partials/alerts') %>
+
+        <form action="/login" method="post">
+            <div class="field" style="margin-bottom:14px;">
+                <label for="username">Identifiant</label>
+                <input type="text" id="username" name="username" value="<%= typeof username !== 'undefined' ? username : 'admin' %>" required autofocus>
+            </div>
+            <div class="field" style="margin-bottom:18px;">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" value="admin123" required>
+            </div>
+            <button class="btn primary" type="submit" style="width:100%; justify-content:center; padding:10px;">Se connecter</button>
+        </form>
+
+        <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border); font-size:12px;">
+            <strong>Comptes de démonstration :</strong>
+            <ul style="padding-left:18px; margin:6px 0 0 0; line-height:1.7;">
+                <li><code>admin</code> / <code>admin123</code> (ADMIN)</li>
+                <li><code>manager</code> / <code>manager123</code> (MANAGER)</li>
+                <li><code>operator</code> / <code>operator123</code> (OPERATOR)</li>
+                <li><code>client</code> / <code>client123</code> (USER - Standard)</li>
+                <li><code>vip</code> / <code>vip123</code> (USER - VIP)</li>
+                <li><code>pmr</code> / <code>pmr123</code> (USER - PMR)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

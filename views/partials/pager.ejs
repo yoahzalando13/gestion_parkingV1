@@ -1,0 +1,13 @@
+<% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+  <div class="pager">
+    <% if (page > 0) { %>
+      <a href="<%= baseUrl %>?page=0&size=<%= size %><%= typeof filterQuery !== 'undefined' ? filterQuery : '' %>">&laquo; Première</a>
+      <a href="<%= baseUrl %>?page=<%= page - 1 %>&size=<%= size %><%= typeof filterQuery !== 'undefined' ? filterQuery : '' %>">Précédente</a>
+    <% } %>
+    <span>Page <%= page + 1 %> / <%= totalPages %> - <%= totalElements %> élément(s)</span>
+    <% if (page < totalPages - 1) { %>
+      <a href="<%= baseUrl %>?page=<%= page + 1 %>&size=<%= size %><%= typeof filterQuery !== 'undefined' ? filterQuery : '' %>">Suivante</a>
+      <a href="<%= baseUrl %>?page=<%= totalPages - 1 %>&size=<%= size %><%= typeof filterQuery !== 'undefined' ? filterQuery : '' %>">Dernière &raquo;</a>
+    <% } %>
+  </div>
+<% } %>

@@ -1,0 +1,167 @@
+<%- include('partials/header', { pageTitle: 'Tableau de bord' }) %>
+<div class="app">
+    <%- include('partials/sidebar', { activeMenu: 'dashboard' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Tableau de bord</h1>
+                <p>Occupation en temps réel, entrées du jour et recettes.</p>
+            </div>
+            <% if (currentUser && ['ADMIN','MANAGER','OPERATOR'].includes(currentUser.role)) { %>
+            <div>
+                <a class="btn primary" href="/sessions/entry">Nouvelle entrée</a>
+                <a class="btn" href="/sessions/exit">Enregistrer une sortie</a>
+            </div>
+            <% } %>
+        </div>
+
+        <%- include('partials/alerts') %>
+
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="label">Places totales</div>
+                <div class="value"><%= stats.totalSpaces %></div>
+                <div class="hint"><%= stats.outOfServiceSpaces %> hors service</div>
+            </div>
+            <div class="kpi free">
+                <div class="label">Places libres</div>
+                <div class="value"><%= stats.freeSpaces %></div>
+            </div>
+            <div class="kpi occupied">
+                <div class="label">Places occupées</div>
+                <div class="value"><%= stats.occupiedSpaces %></div>
+                <div class="hint">Taux <%= stats.occupancyRate %> %</div>
+            </div>
+            <div class="kpi reserved">
+                <div class="label">Places réservées</div>
+                <div class="value"><%= stats.reservedSpaces %></div>
+                <div class="hint"><%= stats.activeReservations %> réservation(s) confirmée(s)</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Véhicules présents</div>
+                <div class="value"><%= stats.ongoingSessions %></div>
+                <div class="hint"><%= stats.entriesToday %> entrée(s) / <%= stats.exitsToday %> sortie(s) aujourd'hui</div>
+            </div>
+            <% if (currentUser && ['ADMIN','MANAGER'].includes(currentUser.role)) { %>
+            <div class="kpi">
+                <div class="label">Recette du jour</div>
+                <div class="value"><%= stats.revenueToday.toLocaleString('fr-FR') %> <%= stats.currency %></div>
+                <div class="hint">Mois : <%= stats.revenueThisMonth.toLocaleString('fr-FR') %> <%= stats.currency %></div>
+            </div>
+            <div class="kpi">
+                <div class="label">Abonnements actifs</div>
+                <div class="value"><%= stats.activeSubscriptions %></div>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Plan du parking -->
+        <div class="card">
+            <h2>Plan du parking</h2>
+            <div class="map-legend">
+                <span class="legend-item"><span class="legend-dot free"></span> Libre</span>
+                <span class="legend-item"><span class="legend-dot reserved"></span> Réservée</span>
+                <span class="legend-item"><span class="legend-dot occupied"></span> Occupée</span>
+                <span class="legend-item"><span class="legend-dot disabled"></span> Hors service</span>
+            </div>
+
+            <% Object.keys(zonedSpaces).forEach(function(zoneKey) { %>
+                <div class="zone-block">
+                    <h3>
+                        <span>Zone <%= zoneKey %></span>
+                        <span style="font-weight:400">(<%= zonedSpaces[zoneKey].length %> places)</span>
+                    </h3>
+                    <div class="slot-grid">
+                        <% zonedSpaces[zoneKey].forEach(function(space) { %>
+                            <div class="slot <%= space.status %>"
+                                 title="<%= space.typeLabel %> - <%= space.statusLabel %><%= space.outOfServiceReason ? ' - ' + space.outOfServiceReason : '' %>">
+                                <span><%= space.number %></span>
+                                <small><%= space.typeLabel %></small>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% }); %>
+
+            <% if (Object.keys(zonedSpaces).length === 0) { %>
+                <div class="empty">Aucune place enregistrée.</div>
+            <% } %>
+        </div>
+
+        <!-- Véhicules actuellement dans le parking -->
+        <div class="card">
+            <h2>Véhicules actuellement dans le parking</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Immatriculation</th>
+                        <th>Client</th>
+                        <th>Place</th>
+                        <th>Zone</th>
+                        <th>Entrée</th>
+                        <th>Durée</th>
+                        <% if (currentUser && ['ADMIN','MANAGER','OPERATOR'].includes(currentUser.role)) { %>
+                        <th>Action</th>
+                        <% } %>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% ongoing.forEach(function(ps) { %>
+                    <tr>
+                        <td><%= ps.reference %></td>
+                        <td><strong><%= ps.plateNumber %></strong></td>
+                        <td><%= ps.userName %></td>
+                        <td><%= ps.spaceNumber %></td>
+                        <td><%= ps.zone %></td>
+                        <td><%= ps.entryTimeFormatted %></td>
+                        <td><%= ps.durationMinutes %> min</td>
+                        <% if (currentUser && ['ADMIN','MANAGER','OPERATOR'].includes(currentUser.role)) { %>
+                        <td>
+                            <a class="btn small primary" href="/sessions/exit?plateNumber=<%= ps.plateNumber %>">Sortie</a>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (ongoing.length === 0) { %>
+                    <div class="empty">Aucun véhicule dans le parking.</div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Occupation par zone -->
+        <div class="card">
+            <h2>Occupation par zone</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Zone</th>
+                        <th>Total</th>
+                        <th>Libres</th>
+                        <th>Occupées</th>
+                        <th>Taux</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% occupancy.zones.forEach(function(zone) { %>
+                    <tr>
+                        <td><%= zone.zone %></td>
+                        <td><%= zone.total %></td>
+                        <td><%= zone.free %></td>
+                        <td><%= zone.occupied %></td>
+                        <td><%= zone.occupancyRate %> %</td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

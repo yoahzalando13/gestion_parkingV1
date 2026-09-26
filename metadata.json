@@ -1,0 +1,8 @@
+{
+  "name": "Système de Gestion de Parking",
+  "description": "Application full-stack de gestion de parking: suivi des places en temps réel, réservations, entrées/sorties, abonnements, facturation et statistiques.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

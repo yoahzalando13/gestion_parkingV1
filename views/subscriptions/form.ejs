@@ -1,0 +1,53 @@
+<%- include('../partials/header', { pageTitle: 'Nouvel abonnement' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'subscriptions' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Souscrire un abonnement</h1>
+                <p>Création d'un contrat d'abonnement rattaché à un véhicule.</p>
+            </div>
+            <a class="btn" href="/subscriptions">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:650px;">
+            <form action="/subscriptions" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="vehicleId">Véhicule</label>
+                        <select id="vehicleId" name="vehicleId" required>
+                            <option value="">Sélectionner un véhicule</option>
+                            <% vehicles.forEach(function(v) { %>
+                                <option value="<%= v.id %>"><%= v.plateNumber %> - <%= v.brand %> <%= v.model %> (Client: <%= v.ownerName %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="type">Formule d'abonnement</label>
+                        <select id="type" name="type" required>
+                            <option value="JOURNALIER">Journalier (15 000 MGA)</option>
+                            <option value="HEBDOMADAIRE">Hebdomadaire (80 000 MGA)</option>
+                            <option value="MENSUEL" selected>Mensuel (250 000 MGA)</option>
+                            <option value="ANNUEL">Annuel (2 400 000 MGA)</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="startDate">Date de début</label>
+                        <input type="date" id="startDate" name="startDate" value="<%= defaultStartDate %>" required>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Valider l'abonnement</button>
+                    <a class="btn" href="/subscriptions">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

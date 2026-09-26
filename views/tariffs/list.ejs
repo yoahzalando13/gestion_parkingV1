@@ -1,0 +1,63 @@
+<%- include('../partials/header', { pageTitle: 'Tarification' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'tariffs' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Règles tarifaires</h1>
+                <p>Configuration de la tarification horaire, forfaits, franchises et coefficients.</p>
+            </div>
+            <a class="btn primary" href="/tariffs/new">Nouvelle règle tarifaire</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nom de la règle</th>
+                        <th>Zone</th>
+                        <th>Type Place</th>
+                        <th>Type Véhicule</th>
+                        <th>Tarif horaire</th>
+                        <th>Tarif min</th>
+                        <th>Plafond 24h</th>
+                        <th>Franchise</th>
+                        <th>Maj. Dép.</th>
+                        <th>Réd. Abonné</th>
+                        <th>Priorité</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% tariffs.forEach(function(t) { %>
+                    <tr>
+                        <td><strong><%= t.name %></strong></td>
+                        <td><%= t.zone ? 'Zone ' + t.zone : 'Toutes' %></td>
+                        <td><%= t.spaceType || 'Tous' %></td>
+                        <td><%= t.vehicleType || 'Tous' %></td>
+                        <td><strong><%= t.hourlyRate.toLocaleString('fr-FR') %> MGA</strong></td>
+                        <td><%= t.minimumFee.toLocaleString('fr-FR') %> MGA</td>
+                        <td><%= t.dailyCap ? t.dailyCap.toLocaleString('fr-FR') + ' MGA' : '-' %></td>
+                        <td><%= t.freeMinutes %> min</td>
+                        <td>x<%= t.overstayMultiplier %></td>
+                        <td><%= t.subscriberDiscountPercent %> %</td>
+                        <td><%= t.priority %></td>
+                        <td><span class="badge <%= t.active ? 'LIBRE' : 'HORS_SERVICE' %>"><%= t.active ? 'Active' : 'Inactive' %></span></td>
+                        <td>
+                            <a class="btn small" href="/tariffs/<%= t.id %>/edit">Modifier</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

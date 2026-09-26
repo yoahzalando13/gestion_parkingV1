@@ -1,0 +1,80 @@
+<%- include('../partials/header', { pageTitle: 'Utilisateurs' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'users' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Utilisateurs</h1>
+                <p>Gestion des comptes usagers, opérateurs et administrateurs.</p>
+            </div>
+            <a class="btn primary" href="/users/new">Nouvel utilisateur</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/users" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="field">
+                        <label for="search">Recherche identifiant / nom / email</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: admin, Rakoto...">
+                    </div>
+                    <div class="field">
+                        <label for="role">Rôle</label>
+                        <select id="role" name="role">
+                            <option value="">Tous les rôles</option>
+                            <option value="ADMIN" <%= selectedRole === 'ADMIN' ? 'selected' : '' %>>Administrateur</option>
+                            <option value="MANAGER" <%= selectedRole === 'MANAGER' ? 'selected' : '' %>>Gestionnaire</option>
+                            <option value="OPERATOR" <%= selectedRole === 'OPERATOR' ? 'selected' : '' %>>Opérateur</option>
+                            <option value="USER" <%= selectedRole === 'USER' ? 'selected' : '' %>>Utilisateur (Client)</option>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Nom complet</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Rôle</th>
+                        <th>Catégorie</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% users.forEach(function(u) { %>
+                    <tr>
+                        <td><strong><%= u.username %></strong></td>
+                        <td><%= u.firstName %> <%= u.lastName %></td>
+                        <td><%= u.email %></td>
+                        <td><%= u.phone || '-' %></td>
+                        <td><span class="badge"><%= u.role %></span></td>
+                        <td><span class="badge"><%= u.category %></span></td>
+                        <td>
+                            <a class="btn small" href="/users/<%= u.id %>/edit">Modifier</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (users.length === 0) { %>
+                    <div class="empty">Aucun utilisateur trouvé.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

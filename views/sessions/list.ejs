@@ -1,0 +1,102 @@
+<%- include('../partials/header', { pageTitle: 'Historique des sessions' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'sessions' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Historique des entrées / sorties</h1>
+                <p>Suivi en direct des flux de stationnement et traçabilité des opérations.</p>
+            </div>
+            <div>
+                <a class="btn primary" href="/sessions/entry">Nouvelle entrée</a>
+                <a class="btn" href="/sessions/exit">Sortie</a>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/sessions" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="field">
+                        <label for="search">Immatriculation / Réf</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: 1234TAA, SES...">
+                    </div>
+                    <div class="field">
+                        <label for="status">Statut</label>
+                        <select id="status" name="status">
+                            <option value="">Tous les statuts</option>
+                            <option value="EN_COURS" <%= selectedStatus === 'EN_COURS' ? 'selected' : '' %>>En cours</option>
+                            <option value="TERMINEE" <%= selectedStatus === 'TERMINEE' ? 'selected' : '' %>>Terminée</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="zone">Zone</label>
+                        <select id="zone" name="zone">
+                            <option value="">Toutes les zones</option>
+                            <% zones.forEach(function(z) { %>
+                                <option value="<%= z %>" <%= selectedZone === z ? 'selected' : '' %>>Zone <%= z %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Immatriculation</th>
+                        <th>Client</th>
+                        <th>Place</th>
+                        <th>Entrée</th>
+                        <th>Sortie</th>
+                        <th>Durée</th>
+                        <th>Statut</th>
+                        <th>Facture</th>
+                        <th>Détails</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% sessions.forEach(function(s) { %>
+                    <tr>
+                        <td><%= s.reference %></td>
+                        <td><strong><%= s.plateNumber %></strong></td>
+                        <td><%= s.userName %></td>
+                        <td><%= s.spaceNumber %> (Zone <%= s.zone %>)</td>
+                        <td><%= s.entryTimeFormatted %></td>
+                        <td><%= s.exitTimeFormatted || '-' %></td>
+                        <td><%= s.durationMinutes %> min</td>
+                        <td><span class="badge <%= s.status %>"><%= s.status === 'EN_COURS' ? 'En cours' : 'Terminée' %></span></td>
+                        <td>
+                            <% if (s.invoiceId) { %>
+                                <a href="/invoices/<%= s.invoiceId %>"><%= s.invoiceReference %> (<%= s.invoiceTotalAmount.toLocaleString('fr-FR') %> MGA)</a>
+                            <% } else { %>
+                                -
+                            <% } %>
+                        </td>
+                        <td>
+                            <a class="btn small" href="/sessions/<%= s.id %>">Voir</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (sessions.length === 0) { %>
+                    <div class="empty">Aucune session enregistrée.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

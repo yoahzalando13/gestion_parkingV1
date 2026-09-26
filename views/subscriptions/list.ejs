@@ -1,0 +1,95 @@
+<%- include('../partials/header', { pageTitle: 'Abonnements' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'subscriptions' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Abonnements</h1>
+                <p>Gestion des formules d'abonnement (journalier, hebdomadaire, mensuel, annuel).</p>
+            </div>
+            <a class="btn primary" href="/subscriptions/new">Nouvel abonnement</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/subscriptions" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="field">
+                        <label for="search">Recherche référence / plaque</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: SUB-..., 1234...">
+                    </div>
+                    <div class="field">
+                        <label for="status">Statut</label>
+                        <select id="status" name="status">
+                            <option value="">Tous les statuts</option>
+                            <option value="ACTIF" <%= selectedStatus === 'ACTIF' ? 'selected' : '' %>>Actif</option>
+                            <option value="SUSPENDU" <%= selectedStatus === 'SUSPENDU' ? 'selected' : '' %>>Suspendu</option>
+                            <option value="EXPIRE" <%= selectedStatus === 'EXPIRE' ? 'selected' : '' %>>Expiré</option>
+                            <option value="ANNULE" <%= selectedStatus === 'ANNULE' ? 'selected' : '' %>>Annulé</option>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Client</th>
+                        <th>Véhicule</th>
+                        <th>Formule</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Prix</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% subscriptions.forEach(function(sub) { %>
+                    <tr>
+                        <td><%= sub.reference %></td>
+                        <td><%= sub.userName %></td>
+                        <td><strong><%= sub.plateNumber %></strong></td>
+                        <td><span class="badge"><%= sub.typeLabel %></span></td>
+                        <td><%= sub.startDateFormatted %></td>
+                        <td><%= sub.endDateFormatted %></td>
+                        <td><%= sub.price.toLocaleString('fr-FR') %> MGA</td>
+                        <td><span class="badge <%= sub.status %>"><%= sub.statusLabel %></span></td>
+                        <td>
+                            <% if (sub.status === 'ACTIF') { %>
+                                <form action="/subscriptions/<%= sub.id %>/suspend" method="post" style="display:inline;">
+                                    <button class="btn small" type="submit">Suspendre</button>
+                                </form>
+                                <form action="/subscriptions/<%= sub.id %>/cancel" method="post" style="display:inline;" onsubmit="return confirm('Annuler cet abonnement ?');">
+                                    <button class="btn small" type="submit" style="color:#dc2626; border-color:#dc2626;">Annuler</button>
+                                </form>
+                            <% } else if (sub.status === 'SUSPENDU') { %>
+                                <form action="/subscriptions/<%= sub.id %>/reactivate" method="post" style="display:inline;">
+                                    <button class="btn small primary" type="submit">Réactiver</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (subscriptions.length === 0) { %>
+                    <div class="empty">Aucun abonnement enregistré.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

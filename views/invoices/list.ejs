@@ -1,0 +1,83 @@
+<%- include('../partials/header', { pageTitle: 'Facturation' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'invoices' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Facturation</h1>
+                <p>Historique des factures de stationnement émises lors des sorties.</p>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/invoices" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="field">
+                        <label for="search">Recherche référence</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: FAC-...">
+                    </div>
+                    <div class="field">
+                        <label for="status">Statut de paiement</label>
+                        <select id="status" name="status">
+                            <option value="">Tous les statuts</option>
+                            <option value="PAYEE" <%= selectedStatus === 'PAYEE' ? 'selected' : '' %>>Payée</option>
+                            <option value="EN_ATTENTE" <%= selectedStatus === 'EN_ATTENTE' ? 'selected' : '' %>>En attente</option>
+                            <option value="ANNULEE" <%= selectedStatus === 'ANNULEE' ? 'selected' : '' %>>Annulée</option>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date émission</th>
+                        <th>Client</th>
+                        <th>Durée facturée</th>
+                        <th>Montant total</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% invoices.forEach(function(inv) { %>
+                    <tr>
+                        <td><strong><%= inv.reference %></strong></td>
+                        <td><%= inv.issuedAtFormatted %></td>
+                        <td><%= inv.userName %></td>
+                        <td><%= inv.billedMinutes %> min</td>
+                        <td><strong><%= inv.totalAmount.toLocaleString('fr-FR') %> <%= inv.currency %></strong></td>
+                        <td><span class="badge <%= inv.status %>"><%= inv.statusLabel %></span></td>
+                        <td>
+                            <a class="btn small" href="/invoices/<%= inv.id %>">Détails</a>
+                            <% if (inv.status === 'EN_ATTENTE') { %>
+                                <form action="/invoices/<%= inv.id %>/pay" method="post" style="display:inline;">
+                                    <button class="btn small primary" type="submit">Encaisser</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (invoices.length === 0) { %>
+                    <div class="empty">Aucune facture trouvée.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

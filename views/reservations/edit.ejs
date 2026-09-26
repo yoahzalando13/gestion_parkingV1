@@ -1,0 +1,47 @@
+<%- include('../partials/header', { pageTitle: 'Modifier la réservation ' + reservation.reference }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'reservations' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Modifier la réservation <%= reservation.reference %></h1>
+                <p>Mettre à jour les horaires ou la place attribuée.</p>
+            </div>
+            <a class="btn" href="/reservations">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:650px;">
+            <form action="/reservations/<%= reservation.id %>/edit" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="spaceId">Place de stationnement</label>
+                        <select id="spaceId" name="spaceId" required>
+                            <% spaces.forEach(function(s) { %>
+                                <option value="<%= s.id %>" <%= s.id === reservation.spaceId ? 'selected' : '' %>><%= s.number %> - <%= s.typeLabel %> (Zone <%= s.zone %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="expectedArrival">Date et heure d'arrivée</label>
+                        <input type="datetime-local" id="expectedArrival" name="expectedArrival" value="<%= reservation.expectedArrivalInput %>" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="expectedDeparture">Date et heure de départ</label>
+                        <input type="datetime-local" id="expectedDeparture" name="expectedDeparture" value="<%= reservation.expectedDepartureInput %>" required>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer les modifications</button>
+                    <a class="btn" href="/reservations">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

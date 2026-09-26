@@ -1,0 +1,97 @@
+<%- include('../partials/header', { pageTitle: 'Facture ' + invoice.reference }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'invoices' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Facture <%= invoice.reference %></h1>
+                <p>Émise le <%= invoice.issuedAtFormatted %></p>
+            </div>
+            <div>
+                <% if (invoice.status === 'EN_ATTENTE') { %>
+                    <form action="/invoices/<%= invoice.id %>/pay" method="post" style="display:inline;">
+                        <button class="btn primary" type="submit">Encaisser le paiement</button>
+                    </form>
+                <% } %>
+                <a class="btn" href="/invoices">Retour</a>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:700px; margin-bottom:24px;">
+            <h2>Informations Générales</h2>
+            <div class="detail-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Client</label>
+                    <strong style="font-size:15px;"><%= invoice.userName %></strong> (<%= invoice.userEmail %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Statut</label>
+                    <span class="badge <%= invoice.status %>"><%= invoice.statusLabel %></span>
+                    <% if (invoice.paidAtFormatted) { %>
+                        <small style="display:block; color:var(--text-muted);">Réglé le <%= invoice.paidAtFormatted %></small>
+                    <% } %>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Session associée</label>
+                    <% if (invoice.sessionReference) { %>
+                        <a href="/sessions/<%= invoice.sessionId %>"><%= invoice.sessionReference %></a>
+                    <% } else { %>
+                        -
+                    <% } %>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Règle tarifaire appliquée</label>
+                    <strong><%= invoice.tariffName %></strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="max-width:700px;">
+            <h2>Décomposition du tarif</h2>
+            <div class="table-wrap" style="margin-top:16px;">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>Durée réelle de stationnement</td>
+                        <td style="text-align:right;"><strong><%= invoice.actualDurationMinutes %> min</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Durée facturée (après franchise)</td>
+                        <td style="text-align:right;"><%= invoice.billedMinutes %> min</td>
+                    </tr>
+                    <tr>
+                        <td>Montant de base</td>
+                        <td style="text-align:right;"><%= invoice.baseAmount.toLocaleString('fr-FR') %> <%= invoice.currency %></td>
+                    </tr>
+                    <% if (invoice.overstayAmount > 0) { %>
+                    <tr>
+                        <td>Majoration dépassement</td>
+                        <td style="text-align:right; color:#dc2626;">+ <%= invoice.overstayAmount.toLocaleString('fr-FR') %> <%= invoice.currency %></td>
+                    </tr>
+                    <% } %>
+                    <% if (invoice.discountAmount > 0) { %>
+                    <tr>
+                        <td>Réduction accordée (abonné / catégorie)</td>
+                        <td style="text-align:right; color:#16a34a;">- <%= invoice.discountAmount.toLocaleString('fr-FR') %> <%= invoice.currency %></td>
+                    </tr>
+                    <% } %>
+                    <tr style="border-top:2px solid var(--border); font-size:16px;">
+                        <td><strong>Net à payer</strong></td>
+                        <td style="text-align:right;"><strong style="color:var(--primary);"><%= invoice.totalAmount.toLocaleString('fr-FR') %> <%= invoice.currency %></strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:16px; padding:12px; background:var(--surface-alt); border-radius:6px; font-size:12px; color:var(--text-muted);">
+                <strong>Détails du calcul :</strong><br>
+                <%= invoice.details %>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

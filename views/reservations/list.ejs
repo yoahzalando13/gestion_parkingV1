@@ -1,0 +1,88 @@
+<%- include('../partials/header', { pageTitle: 'Réservations' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'reservations' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Réservations</h1>
+                <p>Gestion des créneaux réservés et planification des arrivées.</p>
+            </div>
+            <a class="btn primary" href="/reservations/new">Nouvelle réservation</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="margin-bottom:20px;">
+            <form action="/reservations" method="get" class="filter-form">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="field">
+                        <label for="search">Recherche référence / plaque</label>
+                        <input type="text" id="search" name="search" value="<%= search %>" placeholder="Ex: RES-..., 3456...">
+                    </div>
+                    <div class="field">
+                        <label for="status">Statut</label>
+                        <select id="status" name="status">
+                            <option value="">Tous les statuts</option>
+                            <option value="CONFIRMEE" <%= selectedStatus === 'CONFIRMEE' ? 'selected' : '' %>>Confirmée</option>
+                            <option value="EN_COURS" <%= selectedStatus === 'EN_COURS' ? 'selected' : '' %>>En cours</option>
+                            <option value="TERMINEE" <%= selectedStatus === 'TERMINEE' ? 'selected' : '' %>>Terminée</option>
+                            <option value="ANNULEE" <%= selectedStatus === 'ANNULEE' ? 'selected' : '' %>>Annulée</option>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; align-items:flex-end;">
+                        <button class="btn" type="submit" style="width:100%;">Filtrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Client</th>
+                        <th>Véhicule</th>
+                        <th>Place</th>
+                        <th>Arrivée prévue</th>
+                        <th>Départ prévu</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% reservations.forEach(function(r) { %>
+                    <tr>
+                        <td><%= r.reference %></td>
+                        <td><%= r.userName %></td>
+                        <td><strong><%= r.plateNumber %></strong></td>
+                        <td><%= r.spaceNumber %> (Zone <%= r.zone %>)</td>
+                        <td><%= r.expectedArrivalFormatted %></td>
+                        <td><%= r.expectedDepartureFormatted %></td>
+                        <td><span class="badge <%= r.status %>"><%= r.statusLabel %></span></td>
+                        <td>
+                            <a class="btn small" href="/reservations/<%= r.id %>">Détails</a>
+                            <% if (r.status === 'CONFIRMEE') { %>
+                                <a class="btn small" href="/reservations/<%= r.id %>/edit">Modifier</a>
+                                <form action="/reservations/<%= r.id %>/cancel" method="post" style="display:inline;" onsubmit="return confirm('Annuler cette réservation ?');">
+                                    <button class="btn small" type="submit" style="color:#dc2626; border-color:#dc2626;">Annuler</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (reservations.length === 0) { %>
+                    <div class="empty">Aucune réservation enregistrée.</div>
+                <% } %>
+            </div>
+
+            <%- include('../partials/pager') %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

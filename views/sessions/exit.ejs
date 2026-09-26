@@ -1,0 +1,81 @@
+<%- include('../partials/header', { pageTitle: 'Sortie véhicule' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'exit' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Enregistrer une sortie</h1>
+                <p>La place est libérée et la facture est calculée automatiquement, dépassement de réservation inclus.</p>
+            </div>
+            <a class="btn" href="/sessions">Historique</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card">
+            <form action="/sessions/exit" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="plateNumber">Immatriculation</label>
+                        <input type="text" id="plateNumber" name="plateNumber" value="<%= selectedPlate %>" placeholder="Ex: 9012TCC" required autofocus>
+                    </div>
+                    <div class="field">
+                        <label for="exitTime">Horodatage (vide = maintenant)</label>
+                        <input type="datetime-local" id="exitTime" name="exitTime">
+                    </div>
+                    <div class="field">
+                        <label for="markAsPaid">Paiement</label>
+                        <select id="markAsPaid" name="markAsPaid">
+                            <option value="true">Réglé immédiatement</option>
+                            <option value="false">Facture en attente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer la sortie</button>
+                    <a class="btn" href="/dashboard">Annuler</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card" style="margin-top:24px;">
+            <h2>Véhicules actuellement dans le parking</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Immatriculation</th>
+                        <th>Client</th>
+                        <th>Place</th>
+                        <th>Entrée</th>
+                        <th>Durée</th>
+                        <th>Réservation</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% ongoing.forEach(function(ps) { %>
+                    <tr>
+                        <td><strong><%= ps.plateNumber %></strong></td>
+                        <td><%= ps.userName %></td>
+                        <td><%= ps.spaceNumber %></td>
+                        <td><%= ps.entryTimeFormatted %></td>
+                        <td><%= ps.durationMinutes %> min</td>
+                        <td><%= ps.reservationReference || '-' %></td>
+                        <td>
+                            <a class="btn small" href="/sessions/exit?plateNumber=<%= ps.plateNumber %>">Sélectionner</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+                <% if (ongoing.length === 0) { %>
+                    <div class="empty">Aucun véhicule dans le parking.</div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

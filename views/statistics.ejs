@@ -1,0 +1,151 @@
+<%- include('partials/header', { pageTitle: 'Statistiques' }) %>
+<div class="app">
+    <%- include('partials/sidebar', { activeMenu: 'statistics' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Statistiques</h1>
+                <p>Occupation du parking et chiffre d'affaires sur la période choisie.</p>
+            </div>
+            <a class="btn" href="/invoices">Facturation</a>
+        </div>
+
+        <%- include('partials/alerts') %>
+
+        <div class="card">
+            <form class="filters" method="get" action="/statistics" style="display:flex; gap:16px; align-items:flex-end;">
+                <div class="field" style="margin:0;">
+                    <label for="from">Du</label>
+                    <input type="date" id="from" name="from" value="<%= fromDate %>">
+                </div>
+                <div class="field" style="margin:0;">
+                    <label for="to">Au</label>
+                    <input type="date" id="to" name="to" value="<%= toDate %>">
+                </div>
+                <button class="btn primary" type="submit">Appliquer</button>
+            </form>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="label">Chiffre d'affaires</div>
+                <div class="value"><%= revenue.totalRevenue.toLocaleString('fr-FR') %> <%= revenue.currency %></div>
+                <div class="hint"><%= revenue.invoiceCount %> facture(s)</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Ticket moyen</div>
+                <div class="value"><%= revenue.averageTicket.toLocaleString('fr-FR') %> <%= revenue.currency %></div>
+            </div>
+            <div class="kpi">
+                <div class="label">Recette stationnement</div>
+                <div class="value"><%= revenue.parkingRevenue.toLocaleString('fr-FR') %> <%= revenue.currency %></div>
+            </div>
+            <div class="kpi reserved">
+                <div class="label">Recette dépassements</div>
+                <div class="value"><%= revenue.overstayRevenue.toLocaleString('fr-FR') %> <%= revenue.currency %></div>
+            </div>
+            <div class="kpi">
+                <div class="label">Réductions accordées</div>
+                <div class="value"><%= revenue.discountGranted.toLocaleString('fr-FR') %> <%= revenue.currency %></div>
+            </div>
+            <div class="kpi occupied">
+                <div class="label">Taux d'occupation</div>
+                <div class="value"><%= occupancy.occupancyRate %> %</div>
+                <div class="hint"><%= occupancy.occupiedSpaces %> / <%= occupancy.totalSpaces %> places</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Chiffre d'affaires par jour</h2>
+            <div class="bar-chart">
+                <% revenue.daily.forEach(function(day) { 
+                    const pct = maxDaily > 0 ? (day.amount * 100 / maxDaily) : 0;
+                %>
+                    <div class="bar" style="height: <%= Math.max(5, pct) %>%;" title="<%= day.date %> : <%= day.amount.toLocaleString('fr-FR') %> <%= revenue.currency %>"></div>
+                <% }); %>
+            </div>
+            <div class="chart-labels">
+                <% revenue.daily.forEach(function(day) { %>
+                    <span><%= day.label %></span>
+                <% }); %>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Détail par jour</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Factures</th>
+                        <th>Montant</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% revenue.daily.forEach(function(day) { %>
+                    <tr>
+                        <td><%= day.date %></td>
+                        <td><%= day.invoiceCount %></td>
+                        <td><%= day.amount.toLocaleString('fr-FR') %> <%= revenue.currency %></td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Occupation par zone</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Zone</th>
+                        <th>Total</th>
+                        <th>Libres</th>
+                        <th>Occupées</th>
+                        <th>Taux</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% occupancy.zones.forEach(function(zone) { %>
+                    <tr>
+                        <td>Zone <%= zone.zone %></td>
+                        <td><%= zone.total %></td>
+                        <td><%= zone.free %></td>
+                        <td><%= zone.occupied %></td>
+                        <td><%= zone.occupancyRate %> %</td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Répartition des places par type</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Nombre</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% Object.keys(occupancy.countByType).forEach(function(typeKey) { %>
+                    <tr>
+                        <td><%= typeKey %></td>
+                        <td><%= occupancy.countByType[typeKey] %></td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

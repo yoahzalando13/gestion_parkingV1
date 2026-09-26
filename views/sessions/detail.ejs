@@ -1,0 +1,73 @@
+<%- include('../partials/header', { pageTitle: 'Session ' + session.reference }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'sessions' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Session <%= session.reference %></h1>
+                <p>Détail de la session de stationnement</p>
+            </div>
+            <div>
+                <% if (session.status === 'EN_COURS') { %>
+                    <a class="btn primary" href="/sessions/exit?plateNumber=<%= session.plateNumber %>">Enregistrer la sortie</a>
+                <% } %>
+                <a class="btn" href="/sessions">Retour</a>
+            </div>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:700px; margin-bottom:24px;">
+            <h2>Informations Générales</h2>
+            <div class="detail-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Immatriculation</label>
+                    <strong style="font-size:16px;"><%= session.plateNumber %></strong> (<%= session.vehicleType %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Client</label>
+                    <strong><%= session.userName %></strong> (<%= session.userEmail %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Place attribuée</label>
+                    <strong><%= session.spaceNumber %></strong> (Zone <%= session.spaceZone %>, Niveau <%= session.spaceLevel %>)
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Statut</label>
+                    <span class="badge <%= session.status %>"><%= session.status === 'EN_COURS' ? 'En cours' : 'Terminée' %></span>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Horodatage Entrée</label>
+                    <%= session.entryTimeFormatted %>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Horodatage Sortie</label>
+                    <%= session.exitTimeFormatted || 'En cours' %>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Durée réelle</label>
+                    <strong><%= session.durationMinutes %> min</strong>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); font-size:12px; display:block;">Opérateur entrée / sortie</label>
+                    <%= session.entryOperator || '-' %> / <%= session.exitOperator || '-' %>
+                </div>
+            </div>
+        </div>
+
+        <% if (session.invoice) { %>
+        <div class="card" style="max-width:700px;">
+            <h2>Facture associée : <%= session.invoice.reference %></h2>
+            <p>Statut du paiement : <strong class="badge <%= session.invoice.status %>"><%= session.invoice.status === 'PAYEE' ? 'Payée' : 'En attente' %></strong></p>
+            <div style="background:var(--surface-alt); padding:16px; border-radius:8px; margin:16px 0;">
+                <p style="margin:4px 0;"><strong>Montant total :</strong> <span style="font-size:18px; color:var(--primary);"><%= session.invoice.totalAmount.toLocaleString('fr-FR') %> <%= session.invoice.currency %></span></p>
+                <p style="margin:4px 0; font-size:13px; color:var(--text-muted);"><%= session.invoice.details %></p>
+            </div>
+            <a class="btn primary" href="/invoices/<%= session.invoice.id %>">Consulter la facture complète</a>
+        </div>
+        <% } %>
+    </main>
+</div>
+</body>
+</html>

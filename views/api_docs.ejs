@@ -1,0 +1,110 @@
+<%- include('partials/header', { pageTitle: 'Documentation API REST' }) %>
+<div class="app">
+    <%- include('partials/sidebar', { activeMenu: 'api-docs' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Documentation API REST</h1>
+                <p>Spécification des points de terminaison pour l'intégration automatique.</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+            <h2>Authentification API</h2>
+            <p>L'API supporte l'authentification <strong>HTTP Basic</strong> avec les identifiants de démonstration (ex: <code>admin:admin123</code> ou <code>operator:operator123</code>). Toutes les réponses sont au format JSON.</p>
+        </div>
+
+        <div class="card">
+            <h2>Points de terminaison</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Méthode</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                        <th>Accès</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span></td>
+                        <td><code>/api/parking/spaces</code></td>
+                        <td>Liste des places avec filtres (?zone, ?type, ?status, ?search)</td>
+                        <td>Tous rôles</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span></td>
+                        <td><code>/api/parking/spaces/available</code></td>
+                        <td>Places libres disponibles (?zone, ?type)</td>
+                        <td>Tous rôles</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:#2563eb; color:#fff;">POST</span></td>
+                        <td><code>/api/parking/entries</code></td>
+                        <td>Enregistrement d'une entrée ({ plateNumber, preferredZone, spaceId, entryTime })</td>
+                        <td>OPERATOR+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:#2563eb; color:#fff;">POST</span></td>
+                        <td><code>/api/parking/exits</code></td>
+                        <td>Enregistrement d'une sortie avec calcul facture ({ plateNumber, exitTime, markAsPaid })</td>
+                        <td>OPERATOR+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span></td>
+                        <td><code>/api/parking/sessions/ongoing</code></td>
+                        <td>Véhicules actuellement présents dans le parking</td>
+                        <td>OPERATOR+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span></td>
+                        <td><code>/api/parking/occupancy</code></td>
+                        <td>Taux et statistiques d'occupation globales et par zone</td>
+                        <td>Tous rôles</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span></td>
+                        <td><code>/api/parking/revenue</code></td>
+                        <td>Chiffre d'affaires et statistiques financières (?from, ?to)</td>
+                        <td>MANAGER+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span> / <span class="badge" style="background:#2563eb; color:#fff;">POST</span></td>
+                        <td><code>/api/reservations</code></td>
+                        <td>Consultation et création de réservations ({ vehicleId, spaceId, expectedArrival, expectedDeparture })</td>
+                        <td>USER+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span> / <span class="badge" style="background:#2563eb; color:#fff;">POST</span></td>
+                        <td><code>/api/subscriptions</code></td>
+                        <td>Gestion des abonnements usagers</td>
+                        <td>MANAGER+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span></td>
+                        <td><code>/api/invoices</code></td>
+                        <td>Factures émises et statut de règlement</td>
+                        <td>MANAGER+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background:#2563eb; color:#fff;">POST</span></td>
+                        <td><code>/api/invoices/{id}/pay</code></td>
+                        <td>Encaisser une facture en attente</td>
+                        <td>MANAGER+</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge LIBRE">GET</span> / <span class="badge" style="background:#2563eb; color:#fff;">POST</span></td>
+                        <td><code>/api/tariffs</code></td>
+                        <td>Barème tarifaire configurable</td>
+                        <td>ADMIN</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

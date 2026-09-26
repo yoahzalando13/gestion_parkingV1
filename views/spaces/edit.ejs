@@ -1,0 +1,71 @@
+<%- include('../partials/header', { pageTitle: 'Modifier la place ' + space.number }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'spaces' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Modifier la place <%= space.number %></h1>
+                <p>Zone <%= space.zone %> - Niveau <%= space.level %></p>
+            </div>
+            <a class="btn" href="/spaces">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:600px; margin-bottom:24px;">
+            <h2>Informations de la place</h2>
+            <form action="/spaces/<%= space.id %>/edit" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="number">Numéro</label>
+                        <input type="text" id="number" name="number" value="<%= space.number %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="zone">Zone</label>
+                        <input type="text" id="zone" name="zone" value="<%= space.zone %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="level">Niveau</label>
+                        <input type="number" id="level" name="level" value="<%= space.level %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="type">Type</label>
+                        <select id="type" name="type" required>
+                            <option value="STANDARD" <%= space.type === 'STANDARD' ? 'selected' : '' %>>Standard</option>
+                            <option value="PMR" <%= space.type === 'PMR' ? 'selected' : '' %>>PMR</option>
+                            <option value="VIP" <%= space.type === 'VIP' ? 'selected' : '' %>>VIP</option>
+                            <option value="ABONNE" <%= space.type === 'ABONNE' ? 'selected' : '' %>>Abonné</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer les modifications</button>
+                    <a class="btn" href="/spaces">Annuler</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card" style="max-width:600px;">
+            <h2>Maintenance / Statut opérationnel</h2>
+            <p>Statut actuel : <strong class="badge <%= space.status %>"><%= space.statusLabel %></strong></p>
+            <% if (space.status === 'HORS_SERVICE') { %>
+                <form action="/spaces/<%= space.id %>/in-service" method="post" style="margin-top:14px;">
+                    <button class="btn primary" type="submit">Remettre la place en service (LIBRE)</button>
+                </form>
+            <% } else if (space.status === 'LIBRE') { %>
+                <form action="/spaces/<%= space.id %>/out-of-service" method="post" style="margin-top:14px;">
+                    <div class="field" style="margin-bottom:12px;">
+                        <label for="reason">Motif de mise hors service</label>
+                        <input type="text" id="reason" name="reason" placeholder="Ex: Travaux peinture, borne en panne..." required>
+                    </div>
+                    <button class="btn" type="submit" style="background:#dc2626; color:#fff; border-color:#dc2626;">Mettre hors service</button>
+                </form>
+            <% } else { %>
+                <p style="color:var(--text-muted); font-size:13px;">La place est actuellement <%= space.statusLabel.toLowerCase() %>. Elle ne peut pas être mise hors service tant qu'une session ou réservation est active.</p>
+            <% } %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

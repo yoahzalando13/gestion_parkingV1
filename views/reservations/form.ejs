@@ -1,0 +1,58 @@
+<%- include('../partials/header', { pageTitle: 'Nouvelle réservation' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'reservations' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Créer une réservation</h1>
+                <p>Planifier un créneau de stationnement pour un véhicule.</p>
+            </div>
+            <a class="btn" href="/reservations">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:650px;">
+            <form action="/reservations" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="vehicleId">Véhicule</label>
+                        <select id="vehicleId" name="vehicleId" required>
+                            <option value="">Sélectionner un véhicule</option>
+                            <% vehicles.forEach(function(v) { %>
+                                <option value="<%= v.id %>"><%= v.plateNumber %> - <%= v.brand %> <%= v.model %> (Propriétaire: <%= v.ownerName %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="spaceId">Place de stationnement</label>
+                        <select id="spaceId" name="spaceId" required>
+                            <option value="">Sélectionner une place</option>
+                            <% spaces.forEach(function(s) { %>
+                                <option value="<%= s.id %>"><%= s.number %> - <%= s.typeLabel %> (Zone <%= s.zone %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="expectedArrival">Date et heure d'arrivée</label>
+                        <input type="datetime-local" id="expectedArrival" name="expectedArrival" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="expectedDeparture">Date et heure de départ</label>
+                        <input type="datetime-local" id="expectedDeparture" name="expectedDeparture" required>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Confirmer la réservation</button>
+                    <a class="btn" href="/reservations">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

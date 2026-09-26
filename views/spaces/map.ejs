@@ -1,0 +1,73 @@
+<%- include('../partials/header', { pageTitle: 'Plan du parking' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'map' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Plan du parking</h1>
+                <p>Représentation visuelle des places libres, réservées, occupées et hors service.</p>
+            </div>
+            <a class="btn" href="/spaces/available">Places disponibles</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="label">Total</div>
+                <div class="value"><%= occupancy.totalSpaces %></div>
+            </div>
+            <div class="kpi free">
+                <div class="label">Libres</div>
+                <div class="value"><%= occupancy.freeSpaces %></div>
+            </div>
+            <div class="kpi reserved">
+                <div class="label">Réservées</div>
+                <div class="value"><%= occupancy.reservedSpaces %></div>
+            </div>
+            <div class="kpi occupied">
+                <div class="label">Occupées</div>
+                <div class="value"><%= occupancy.occupiedSpaces %></div>
+                <div class="hint">Taux <%= occupancy.occupancyRate %> %</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Hors service</div>
+                <div class="value"><%= occupancy.outOfServiceSpaces %></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="map-legend">
+                <span class="legend-item"><span class="legend-dot free"></span> Libre</span>
+                <span class="legend-item"><span class="legend-dot reserved"></span> Réservée</span>
+                <span class="legend-item"><span class="legend-dot occupied"></span> Occupée</span>
+                <span class="legend-item"><span class="legend-dot disabled"></span> Hors service</span>
+            </div>
+
+            <% Object.keys(zonedSpaces).forEach(function(zoneKey) { %>
+                <div class="zone-block">
+                    <h3>
+                        <span>Zone <%= zoneKey %></span>
+                        <span style="font-weight:400">- <%= zonedSpaces[zoneKey].length %> places</span>
+                    </h3>
+                    <div class="slot-grid">
+                        <% zonedSpaces[zoneKey].forEach(function(space) { %>
+                            <div class="slot <%= space.status %>"
+                                 title="<%= space.typeLabel %> - <%= space.statusLabel %><%= space.outOfServiceReason ? ' - ' + space.outOfServiceReason : '' %>">
+                                <span><%= space.number %></span>
+                                <small><%= space.typeLabel %></small>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% }); %>
+
+            <% if (Object.keys(zonedSpaces).length === 0) { %>
+                <div class="empty">Aucune place enregistrée.</div>
+            <% } %>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<%- include('../partials/header', { pageTitle: 'Ajouter un véhicule' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'vehicles' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Ajouter un véhicule</h1>
+                <p>Enregistrement d'un nouveau véhicule dans le système.</p>
+            </div>
+            <a class="btn" href="/vehicles">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:600px;">
+            <form action="/vehicles" method="post">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="plateNumber">Numéro d'immatriculation</label>
+                        <input type="text" id="plateNumber" name="plateNumber" placeholder="Ex: 1234TAB" required autofocus>
+                    </div>
+                    <div class="field">
+                        <label for="brand">Marque</label>
+                        <input type="text" id="brand" name="brand" placeholder="Ex: Peugeot, Renault..." required>
+                    </div>
+                    <div class="field">
+                        <label for="model">Modèle</label>
+                        <input type="text" id="model" name="model" placeholder="Ex: 208, Clio..." required>
+                    </div>
+                    <div class="field">
+                        <label for="color">Couleur</label>
+                        <input type="text" id="color" name="color" placeholder="Ex: Gris, Blanc...">
+                    </div>
+                    <div class="field">
+                        <label for="type">Type de véhicule</label>
+                        <select id="type" name="type" required>
+                            <option value="VOITURE">Voiture (Coeff 1.0)</option>
+                            <option value="MOTO">Moto (Coeff 0.6)</option>
+                            <option value="UTILITAIRE">Utilitaire (Coeff 1.4)</option>
+                            <option value="CAMION">Camion (Coeff 2.0)</option>
+                            <option value="ELECTRIQUE">Électrique (Coeff 0.9)</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="ownerId">Propriétaire (Usager)</label>
+                        <select id="ownerId" name="ownerId" required>
+                            <% users.forEach(function(u) { %>
+                                <option value="<%= u.id %>"><%= u.firstName %> <%= u.lastName %> (<%= u.username %> - <%= u.category %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer le véhicule</button>
+                    <a class="btn" href="/vehicles">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<%- include('../partials/header', { pageTitle: 'Modifier la règle ' + tariff.name }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'tariffs' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Modifier la règle tarifaire</h1>
+                <p><%= tariff.name %></p>
+            </div>
+            <a class="btn" href="/tariffs">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:700px;">
+            <form action="/tariffs/<%= tariff.id %>/edit" method="post">
+                <div class="form-grid">
+                    <div class="field" style="grid-column: span 2;">
+                        <label for="name">Nom de la règle</label>
+                        <input type="text" id="name" name="name" value="<%= tariff.name %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="zone">Zone ciblée</label>
+                        <input type="text" id="zone" name="zone" value="<%= tariff.zone || '' %>" placeholder="Ex: A, B, C">
+                    </div>
+                    <div class="field">
+                        <label for="spaceType">Type de place</label>
+                        <select id="spaceType" name="spaceType">
+                            <option value="">Tous les types</option>
+                            <option value="STANDARD" <%= tariff.spaceType === 'STANDARD' ? 'selected' : '' %>>Standard</option>
+                            <option value="PMR" <%= tariff.spaceType === 'PMR' ? 'selected' : '' %>>PMR</option>
+                            <option value="VIP" <%= tariff.spaceType === 'VIP' ? 'selected' : '' %>>VIP</option>
+                            <option value="ABONNE" <%= tariff.spaceType === 'ABONNE' ? 'selected' : '' %>>Abonné</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="vehicleType">Type de véhicule</label>
+                        <select id="vehicleType" name="vehicleType">
+                            <option value="">Tous les véhicules</option>
+                            <option value="VOITURE" <%= tariff.vehicleType === 'VOITURE' ? 'selected' : '' %>>Voiture</option>
+                            <option value="MOTO" <%= tariff.vehicleType === 'MOTO' ? 'selected' : '' %>>Moto</option>
+                            <option value="UTILITAIRE" <%= tariff.vehicleType === 'UTILITAIRE' ? 'selected' : '' %>>Utilitaire</option>
+                            <option value="CAMION" <%= tariff.vehicleType === 'CAMION' ? 'selected' : '' %>>Camion</option>
+                            <option value="ELECTRIQUE" <%= tariff.vehicleType === 'ELECTRIQUE' ? 'selected' : '' %>>Électrique</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="userCategory">Catégorie usager</label>
+                        <select id="userCategory" name="userCategory">
+                            <option value="">Toutes catégories</option>
+                            <option value="STANDARD" <%= tariff.userCategory === 'STANDARD' ? 'selected' : '' %>>Standard</option>
+                            <option value="VIP" <%= tariff.userCategory === 'VIP' ? 'selected' : '' %>>VIP</option>
+                            <option value="PMR" <%= tariff.userCategory === 'PMR' ? 'selected' : '' %>>PMR</option>
+                            <option value="ABONNE" <%= tariff.userCategory === 'ABONNE' ? 'selected' : '' %>>Abonné</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="hourlyRate">Tarif horaire (MGA)</label>
+                        <input type="number" step="100" id="hourlyRate" name="hourlyRate" value="<%= tariff.hourlyRate %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="minimumFee">Tarif minimum (MGA)</label>
+                        <input type="number" step="100" id="minimumFee" name="minimumFee" value="<%= tariff.minimumFee %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="dailyCap">Forfait journalier / plafond 24h (MGA)</label>
+                        <input type="number" step="1000" id="dailyCap" name="dailyCap" value="<%= tariff.dailyCap || '' %>">
+                    </div>
+                    <div class="field">
+                        <label for="freeMinutes">Franchise gratuite (minutes)</label>
+                        <input type="number" id="freeMinutes" name="freeMinutes" value="<%= tariff.freeMinutes %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="overstayMultiplier">Multiplicateur dépassement</label>
+                        <input type="number" step="0.05" id="overstayMultiplier" name="overstayMultiplier" value="<%= tariff.overstayMultiplier %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="subscriberDiscountPercent">Réduction abonné (%)</label>
+                        <input type="number" step="1" id="subscriberDiscountPercent" name="subscriberDiscountPercent" value="<%= tariff.subscriberDiscountPercent %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="priority">Priorité d'application</label>
+                        <input type="number" id="priority" name="priority" value="<%= tariff.priority %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="active">État de la règle</label>
+                        <select id="active" name="active">
+                            <option value="true" <%= tariff.active ? 'selected' : '' %>>Active</option>
+                            <option value="false" <%= !tariff.active ? 'selected' : '' %>>Désactivée</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Enregistrer les modifications</button>
+                    <a class="btn" href="/tariffs">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

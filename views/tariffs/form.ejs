@@ -1,0 +1,96 @@
+<%- include('../partials/header', { pageTitle: 'Nouvelle règle tarifaire' }) %>
+<div class="app">
+    <%- include('../partials/sidebar', { activeMenu: 'tariffs' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Créer une règle tarifaire</h1>
+                <p>Définition d'un barème de calcul de facturation.</p>
+            </div>
+            <a class="btn" href="/tariffs">Retour</a>
+        </div>
+
+        <%- include('../partials/alerts') %>
+
+        <div class="card" style="max-width:700px;">
+            <form action="/tariffs" method="post">
+                <div class="form-grid">
+                    <div class="field" style="grid-column: span 2;">
+                        <label for="name">Nom de la règle</label>
+                        <input type="text" id="name" name="name" placeholder="Ex: Tarif de nuit, Tarif spécial..." required autofocus>
+                    </div>
+                    <div class="field">
+                        <label for="zone">Zone ciblée (facultatif)</label>
+                        <input type="text" id="zone" name="zone" placeholder="Ex: A, B, C (vide = toutes)">
+                    </div>
+                    <div class="field">
+                        <label for="spaceType">Type de place (facultatif)</label>
+                        <select id="spaceType" name="spaceType">
+                            <option value="">Tous les types</option>
+                            <option value="STANDARD">Standard</option>
+                            <option value="PMR">PMR</option>
+                            <option value="VIP">VIP</option>
+                            <option value="ABONNE">Abonné</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="vehicleType">Type de véhicule (facultatif)</label>
+                        <select id="vehicleType" name="vehicleType">
+                            <option value="">Tous les véhicules</option>
+                            <option value="VOITURE">Voiture</option>
+                            <option value="MOTO">Moto</option>
+                            <option value="UTILITAIRE">Utilitaire</option>
+                            <option value="CAMION">Camion</option>
+                            <option value="ELECTRIQUE">Électrique</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="userCategory">Catégorie usager (facultatif)</label>
+                        <select id="userCategory" name="userCategory">
+                            <option value="">Toutes catégories</option>
+                            <option value="STANDARD">Standard</option>
+                            <option value="VIP">VIP</option>
+                            <option value="PMR">PMR</option>
+                            <option value="ABONNE">Abonné</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="hourlyRate">Tarif horaire (MGA)</label>
+                        <input type="number" step="100" id="hourlyRate" name="hourlyRate" value="2000" required>
+                    </div>
+                    <div class="field">
+                        <label for="minimumFee">Tarif minimum (MGA)</label>
+                        <input type="number" step="100" id="minimumFee" name="minimumFee" value="1000" required>
+                    </div>
+                    <div class="field">
+                        <label for="dailyCap">Forfait journalier / plafond 24h (MGA)</label>
+                        <input type="number" step="1000" id="dailyCap" name="dailyCap" value="20000">
+                    </div>
+                    <div class="field">
+                        <label for="freeMinutes">Franchise gratuite (minutes)</label>
+                        <input type="number" id="freeMinutes" name="freeMinutes" value="15" required>
+                    </div>
+                    <div class="field">
+                        <label for="overstayMultiplier">Multiplicateur dépassement</label>
+                        <input type="number" step="0.05" id="overstayMultiplier" name="overstayMultiplier" value="1.50" required>
+                    </div>
+                    <div class="field">
+                        <label for="subscriberDiscountPercent">Réduction abonné (%)</label>
+                        <input type="number" step="1" id="subscriberDiscountPercent" name="subscriberDiscountPercent" value="20" required>
+                    </div>
+                    <div class="field">
+                        <label for="priority">Priorité d'application</label>
+                        <input type="number" id="priority" name="priority" value="10" required>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn primary" type="submit">Créer la règle</button>
+                    <a class="btn" href="/tariffs">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

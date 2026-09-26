@@ -1,0 +1,11 @@
+<div>
+  <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+    <div class="alert success"><%= successMessage %></div>
+  <% } %>
+  <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+    <div class="alert error"><%= errorMessage %></div>
+  <% } %>
+  <% if (typeof infoMessage !== 'undefined' && infoMessage) { %>
+    <div class="alert info"><%= infoMessage %></div>
+  <% } %>
+</div>

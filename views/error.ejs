@@ -1,0 +1,27 @@
+<%- include('partials/header', { pageTitle: 'Erreur ' + status }) %>
+<div class="app">
+    <%- include('partials/sidebar', { activeMenu: '' }) %>
+
+    <main class="content">
+        <div class="page-head">
+            <div>
+                <h1>Erreur <%= status %></h1>
+                <p><%= message || 'Une anomalie est survenue.' %></p>
+            </div>
+            <a class="btn primary" href="/dashboard">Retour au tableau de bord</a>
+        </div>
+
+        <div class="card" style="max-width:600px;">
+            <p style="font-size:16px; color:#dc2626;"><%= message %></p>
+            <% if (typeof details !== 'undefined' && details) { %>
+                <pre style="background:var(--surface-alt); padding:12px; border-radius:6px; font-size:12px; overflow-x:auto;"><%= details %></pre>
+            <% } %>
+            <div style="margin-top:20px;">
+                <a class="btn" href="javascript:history.back()">Page précédente</a>
+                <a class="btn primary" href="/dashboard">Tableau de bord</a>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
